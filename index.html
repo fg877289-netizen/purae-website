@@ -886,6 +886,37 @@ function buildResult(){
     wrapper.appendChild(card);
   });
   setTimeout(()=>document.querySelectorAll('.view-product-btn').forEach(btn=>btn.addEventListener('click',()=>showProductPage(btn.dataset.pid))),100);
+
+  // Skinimalism Routine Builder
+  const routineDiv = document.createElement('div');
+  routineDiv.style.cssText = 'margin-top:14px;background:#F0F4F0;border-left:3px solid #4A6741;padding:14px;';
+
+  const consistency = answers.consistency || 'Most days';
+  const isConsistent = consistency === 'Every day without fail' || consistency === 'Most days';
+  const isAM2 = timing === 'Morning (AM)' || timing === 'Both equally';
+  const isPM2 = timing === 'Evening (PM)' || timing === 'Both equally';
+  const isSens2 = sens === 'Very sensitive' || sens === 'Mildly sensitive';
+
+  let steps = [];
+  if (isAM2) steps.push({ step: 'AM Step 1', name: 'Hyaluronic Pure Serum', reason: 'Apply to damp skin to lock in hydration before moisturiser.' });
+  if (isAM2) steps.push({ step: 'AM Step 2', name: 'Radiance Day Cream', reason: 'Seal in moisture and prep skin for SPF. Ceramide-enriched for barrier protection.' });
+  if (isSens2 && !steps.find(s=>s.name==='Calm Barrier Serum')) steps.push({ step: isPM2 ? 'PM Step 1' : 'Extra Step', name: 'Calm Barrier Serum', reason: 'Apply after cleansing to calm and restore the skin barrier.' });
+  if (isPM2) steps.push({ step: isPM2 && isAM2 ? 'PM Step '+(steps.filter(s=>s.step.startsWith('PM')).length+1) : 'PM Step 1', name: 'Overnight Reset Balm', reason: 'Final step before sleep. Bakuchiol works overnight to renew cell turnover without irritation.' });
+
+  // Keep to max 3 steps (skinimalism)
+  const finalSteps = steps.slice(0, 3);
+
+  routineDiv.innerHTML = '<div style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:#4A6741;font-weight:500;margin-bottom:10px;">✦ Your Skinimalism Routine — ' + finalSteps.length + ' Steps Only</div>' +
+    '<div style="font-size:0.72rem;color:#5A5A56;margin-bottom:10px;">Based on your ' + (isConsistent ? 'consistent' : 'flexible') + ' routine and ' + timing.toLowerCase() + ' preference, here is your most essential routine:</div>' +
+    finalSteps.map((s,i) => '<div style="padding:8px 0;border-bottom:1px solid #E5DDD3;">' +
+      '<div style="font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#8A9E8C;margin-bottom:2px;">' + s.step + '</div>' +
+      '<div style="font-size:0.82rem;font-weight:500;color:#1C1C1A;margin-bottom:2px;">' + s.name + '</div>' +
+      '<div style="font-size:0.75rem;color:#5A5A56;">' + s.reason + '</div>' +
+    '</div>').join('') +
+    '<div style="font-size:0.7rem;color:#8A9E8C;margin-top:8px;font-style:italic;">Less is more — these ' + finalSteps.length + ' steps are all your skin truly needs.</div>';
+
+  wrapper.appendChild(routineDiv);
+
   return wrapper;
 }
 function showTyping(){const el=getEl(),t=document.createElement('div');t.className='msg ai';t.id='typing-ind';t.innerHTML=`<div class="msg-avatar ai">P</div><div class="ai-typing"><span></span><span></span><span></span></div>`;el.appendChild(t);scrollBottom();}
